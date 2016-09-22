@@ -23,7 +23,7 @@ public class ClientController
     @RequestMapping(value = "/client/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
-    public ResponseEntity<Client> createColdDrink(@RequestBody Client client) {
+    public ResponseEntity<Client> createClient(@RequestBody Client client) {
         service.create(client);
         return new ResponseEntity<Client>(client, HttpStatus.CREATED);
     }
@@ -35,7 +35,7 @@ public class ClientController
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Client> readColdDrinkByID(@PathVariable("id") long id) {
+    public ResponseEntity<Client> readClientByID(@PathVariable("id") long id) {
         Client client = service.readById(id);
         if (client == null) {
             return new ResponseEntity<Client>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,7 +49,7 @@ public class ClientController
     @RequestMapping(value = "/clients/",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<Client>> findAllColdDrinks() {
+    public ResponseEntity<Iterable<Client>> findAllClients() {
         Iterable<Client> clients = service.readAll();
         if (clients == null) {
             return new ResponseEntity<Iterable<Client>>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,7 +63,7 @@ public class ClientController
     @RequestMapping(value = "/client/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.PUT)
-    public ResponseEntity<Client> updateColdDrink(@PathVariable("id") long id, @RequestBody Client client)
+    public ResponseEntity<Client> updateClients(@PathVariable("id") long id, @RequestBody Client client)
     {
         Client currentClient = service.readById(id);
         if(currentClient == null)
@@ -71,8 +71,9 @@ public class ClientController
             return new ResponseEntity<Client>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         Client update = new Client.ClientBuilder()
-                .name(currentClient.getName())
-                .lastName(currentClient.getLastName())
+                .copy(currentClient)
+                .name(client.getName())
+                .lastName(client.getLastName())
                 .address(client.getObjAdress()).build();
         service.update(update);
         return new ResponseEntity<Client>(update,HttpStatus.OK);
@@ -83,7 +84,7 @@ public class ClientController
     * */
     @RequestMapping(value = "/client/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<Client> deleteColdDrink(@PathVariable("id") long id)
+    public ResponseEntity<Client> deleteClient(@PathVariable("id") long id)
     {
         Client beverage = service.readById(id);
         if(beverage == null)
